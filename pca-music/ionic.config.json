@@ -1,0 +1,7 @@
+{
+  "name": "pca-music",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
