@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Home
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <swiper-container
+  pagination="true"
+  loop="true"
+  slides-per-view="1"
+  style="width: 100%; height: 100%;"
+  [style.background-color]="colorActual">
+    <swiper-slide *ngFor="let genre of genres">
+      <div class="slide-content">
+        <h2>{{ genre.title }}</h2>
+        <img [src]="genre.image" [alt]="genre.title" >
+        <p [style.color]="colorTextoActual">{{ genre.description }}</p>
+      </div>
+    </swiper-slide>
+</swiper-container>
+<div>
+    Hola mundo
+</div>
+<ion-button (click)="cambiarColor()">
+  Cambiar tema
+</ion-button>
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>ish</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    hola
+  </ion-card-content>
+</ion-card>
+
+<div>
+  <h3>demo Ionic Storage</h3>
+  <div [style.backgound-color]="colorActual">
+    <p> Tema Actual: {{ colorActual === colorOscuro ? 'Oscuro' : 'Claro'}}</p>
+</div>
+<div>
+   <ion-button (click)="cambiarColor()"> Cambiar Tema y guardar </ion-button>
+   <ion-button (click)="goIntro()">Volver a la intro</ion-button>
+</div>
+
+<div>
+  <p class="ion-text-center">Texto Centrado</p>
+  <p class="ion-text-left">Texto a la izquierda</p>
+  <p class="ion-text-right">Texto a la derecha</p>
+</div>
+
+ 
+
