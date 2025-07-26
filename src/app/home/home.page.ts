@@ -4,6 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { StorageService } from '../services/storage.service';
 import { Router } from '@angular/router';
+import { MusicService } from '../services/music.service';
 
 @Component({
   selector: 'app-home',
@@ -41,11 +42,34 @@ export class HomePage implements OnInit{
       description:"Lorem ipsum dolor sit amet consectetur adipiscing elit, luctus quam cursus cubilia porta nostra fusce, quis non hac nibh vitae semper. Nulla nunc euismod dapibus litora ac tortor turpis leo, at sed per vestibulum purus luctus porttitor sagittis, porta commodo mauris penatibus mus felis condimentum. Tristique fusce non morbi scelerisque ornare semper viverra velit, platea tempor taciti ante elementum hendrerit molestie, purus luctus et cras eget habitant orci."
     }
   ]
-  constructor(private router: Router, private storageService: StorageService) {}
+
+  tracks: any;
+  albums: any;
+  localArtists: any;
+  constructor(private router: Router, private storageService: StorageService, private musicService: MusicService) {}
 
   async ngOnInit() {
     await this.loadStorageData();
     this.simularCargaDatos();
+    this.loadTracks();
+    this.loadAlbums();
+    this.getLocalArtists();
+  }
+
+  loadTracks(){
+    this.musicService.getTracks().then(tracks => {
+      this.tracks = tracks;
+      console.log(this.tracks, "las canciones")
+    })
+
+  }
+
+  loadAlbums(){
+    this.musicService.getAlbums().then(albums => {
+      this.albums = albums;
+      console.log(this.albums, "los albums")
+    })
+
   }
 
   async cambiarColor(){
@@ -89,5 +113,10 @@ export class HomePage implements OnInit{
         resolve(['Electronica', 'Pop', 'Jazz', 'Clasica']);
     }, 1500);
   })
+  }
+
+  getLocalArtists(){
+    this.localArtists = this.musicService.getLocalArtists();
+    console.log("artistas", this.localArtists.artists)
   }
 }
