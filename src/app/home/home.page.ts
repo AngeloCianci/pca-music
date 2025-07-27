@@ -26,6 +26,13 @@ export class HomePage implements OnInit{
   albums: any;
   localArtists: any;
   artists: any;
+  song: any = {
+    name: '',
+    preview_url: '',
+    playing: false
+  };
+  currentSong: any;
+  newTime: any;
   constructor(private modalCtrl: ModalController, private router: Router, private storageService: StorageService, private musicService: MusicService) {}
 
   async ngOnInit() {
@@ -39,7 +46,6 @@ export class HomePage implements OnInit{
   loadTracks(){
     this.musicService.getTracks().then(tracks => {
       this.tracks = tracks;
-      console.log(this.tracks, "las canciones")
     })
 
   }
@@ -47,14 +53,12 @@ export class HomePage implements OnInit{
   loadArtists(){
     this.musicService.getArtists().then(artists => {
       this.artists = artists;
-      console.log(this.artists, "los artistas")
     })
   }
 
   loadAlbums(){
     this.musicService.getAlbums().then(albums => {
       this.albums = albums;
-      console.log(this.albums, "los albums")
     })
 
   }
@@ -69,10 +73,8 @@ export class HomePage implements OnInit{
     }   
     
     await this.storageService.set('theme', this.colorActual);
-    console.log('Tema guardado:', this.colorActual);
 
     await this.storageService.set('themetext', this.colorTextoActual);
-    console.log('Texto guardado:', this.colorTextoActual);
   }
 
   async loadStorageData() {
@@ -91,7 +93,6 @@ export class HomePage implements OnInit{
 
   async simularCargaDatos() {
     const data = await this.obtenerDatosSimulados();
-    console.log('Datos simulados: ', data);
   }
 
   obtenerDatosSimulados() {
@@ -103,29 +104,63 @@ export class HomePage implements OnInit{
   }
 
   async showSongs(albumId: string) {
-    console.log("album id: ", albumId)
     const songs = await this.musicService.getSongsByAlbum(albumId);
-    console.log("songs: ", songs)
     const modal = await this.modalCtrl.create({
       component: SongsModalPage,
       componentProps: {
         songs: songs
       }
     });
+    modal.onDidDismiss().then((result) =>{
+      if (result.data){
+        this.song = result.data;
+      }
+    })
     modal.present();
   }
 
   async showSongsByArtists(artistId: string) {
-    console.log("artist id: ", artistId)
     const songs = await this.musicService.getSongsByArtists(artistId);
-    console.log("songs: ", songs)
     const modal = await this.modalCtrl.create({
       component: SongsModalPage,
       componentProps: {
         songs: songs
       }
     });
+    modal.onDidDismiss().then((result) =>{
+      if (result.data){
+        this.song = result.data;
+      }
+    })
     modal.present();
+  }
+
+  play(){
+    this.currentSong = new Audio(this.song.preview_url);
+    this.currentSong.play();
+    this.currentSong.addEventListener("timeupdate", ()=>{
+      this.newTime = this.currentSong.currentTime / this.currentSong.duration;
+    })
+    this.song.playing = true;
+  }
+
+  pause(){
+    this.currentSong.pause();
+    this.song.playing = false;
+  }
+
+  formatTime(seconds: number) {
+    if (!seconds || isNaN(seconds)) return "0:00";
+    const minutes = Math.floor(seconds/60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  }
+
+  getRemainingTime(){
+    if (!this.currentSong?.duration || !this.currentSong?.currentTime){
+      return 0;
+    }
+    return this.currentSong.duration - this.currentSong.currentTime;
   }
 
 }
