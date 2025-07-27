@@ -8,13 +8,24 @@
 </ion-header>
 
 <ion-content>
+  <p>Canciones</p>
   <swiper-container pagination="true" loop="true" slides-per-view="3"
   >
-    <swiper-slide *ngFor="let albums of albums">
+    <swiper-slide *ngFor="let albums of albums" (click)="showSongs(albums.id)">
       <div class="slide-content">
         <img [src]="albums.image"/>
         <p>{{ albums.name }}</p>
       </div>
     </swiper-slide>
   </swiper-container>
+  <p>Artistas</p>
+  <swiper-container pagination="true" loop="true" slides-per-view="3" 
+  >
+  <swiper-slide *ngFor="let artists of artists" (click)="showSongsByArtists(artists.id)">
+    <div class="slide-content">
+      <img [src]="artists.image"/>
+      <p>{{ artists.name }}</p>
+    </div>
+  </swiper-slide>
+</swiper-container>
 </ion-content>

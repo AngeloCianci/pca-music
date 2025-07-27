@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { StorageService } from '../services/storage.service';
 import { Router } from '@angular/router';
 import { MusicService } from '../services/music.service';
+import { SongsModalPage } from '../songs-modal/songs-modal.page';
 
 @Component({
   selector: 'app-home',
@@ -20,40 +21,19 @@ export class HomePage implements OnInit{
   colorTextoOscuro = 'var(--Tema-oscuro-texto)';
   colorTextoActual = this.colorTextoClaro;
   colorActual = this.colorClaro;
-  genres = [
-    {
-      title: "Musica Clasica",
-      image:"https://musicaclasica.com.ar/wp-content/uploads/92213804_212123373455654_8855503586826649600_n.jpg",
-      description:"Lorem ipsum dolor sit amet consectetur adipiscing elit, luctus quam cursus cubilia porta nostra fusce, quis non hac nibh vitae semper. Nulla nunc euismod dapibus litora ac tortor turpis leo, at sed per vestibulum purus luctus porttitor sagittis, porta commodo mauris penatibus mus felis condimentum. Tristique fusce non morbi scelerisque ornare semper viverra velit, platea tempor taciti ante elementum hendrerit molestie, purus luctus et cras eget habitant orci."
-    },
-    {
-      title: "Musica Electronica",
-      image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5wk5GwTvk040hJZTC2MTkuhJAi4eQvAfe6Q&s",
-      description:"Lorem ipsum dolor sit amet consectetur adipiscing elit, luctus quam cursus cubilia porta nostra fusce, quis non hac nibh vitae semper. Nulla nunc euismod dapibus litora ac tortor turpis leo, at sed per vestibulum purus luctus porttitor sagittis, porta commodo mauris penatibus mus felis condimentum. Tristique fusce non morbi scelerisque ornare semper viverra velit, platea tempor taciti ante elementum hendrerit molestie, purus luctus et cras eget habitant orci."
-    },
-    {
-      title: "Musica jazz",
-      image:"https://media.diariolasamericas.com/p/f6c2ef609c6b21f3c0ea95334c8f7572/adjuntos/216/imagenes/100/129/0100129360/855x0/smart/dia-internacional-del-jazzjpg.jpg",
-      description:"Lorem ipsum dolor sit amet consectetur adipiscing elit, luctus quam cursus cubilia porta nostra fusce, quis non hac nibh vitae semper. Nulla nunc euismod dapibus litora ac tortor turpis leo, at sed per vestibulum purus luctus porttitor sagittis, porta commodo mauris penatibus mus felis condimentum. Tristique fusce non morbi scelerisque ornare semper viverra velit, platea tempor taciti ante elementum hendrerit molestie, purus luctus et cras eget habitant orci."
-    },
-    {
-      title: "Musica pop",
-      image:"https://los40.com/resizer/4J4F58FtRSyMzKqUTubgATFVnEw=/arc-photo-prisaradiolos40/eu-central-1-prod/public/4XSAQPS5P5AGPIR7Q43KXZZTUA.jpg",
-      description:"Lorem ipsum dolor sit amet consectetur adipiscing elit, luctus quam cursus cubilia porta nostra fusce, quis non hac nibh vitae semper. Nulla nunc euismod dapibus litora ac tortor turpis leo, at sed per vestibulum purus luctus porttitor sagittis, porta commodo mauris penatibus mus felis condimentum. Tristique fusce non morbi scelerisque ornare semper viverra velit, platea tempor taciti ante elementum hendrerit molestie, purus luctus et cras eget habitant orci."
-    }
-  ]
 
   tracks: any;
   albums: any;
   localArtists: any;
-  constructor(private router: Router, private storageService: StorageService, private musicService: MusicService) {}
+  artists: any;
+  constructor(private modalCtrl: ModalController, private router: Router, private storageService: StorageService, private musicService: MusicService) {}
 
   async ngOnInit() {
     await this.loadStorageData();
     this.simularCargaDatos();
     this.loadTracks();
     this.loadAlbums();
-    this.getLocalArtists();
+    this.loadArtists();
   }
 
   loadTracks(){
@@ -62,6 +42,13 @@ export class HomePage implements OnInit{
       console.log(this.tracks, "las canciones")
     })
 
+  }
+
+  loadArtists(){
+    this.musicService.getArtists().then(artists => {
+      this.artists = artists;
+      console.log(this.artists, "los artistas")
+    })
   }
 
   loadAlbums(){
@@ -115,8 +102,30 @@ export class HomePage implements OnInit{
   })
   }
 
-  getLocalArtists(){
-    this.localArtists = this.musicService.getLocalArtists();
-    console.log("artistas", this.localArtists.artists)
+  async showSongs(albumId: string) {
+    console.log("album id: ", albumId)
+    const songs = await this.musicService.getSongsByAlbum(albumId);
+    console.log("songs: ", songs)
+    const modal = await this.modalCtrl.create({
+      component: SongsModalPage,
+      componentProps: {
+        songs: songs
+      }
+    });
+    modal.present();
   }
+
+  async showSongsByArtists(artistId: string) {
+    console.log("artist id: ", artistId)
+    const songs = await this.musicService.getSongsByArtists(artistId);
+    console.log("songs: ", songs)
+    const modal = await this.modalCtrl.create({
+      component: SongsModalPage,
+      componentProps: {
+        songs: songs
+      }
+    });
+    modal.present();
+  }
+
 }

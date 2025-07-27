@@ -13,7 +13,8 @@ import { StorageService } from '../services/storage.service';
 })
 export class MenuPage implements OnInit {
 
-  constructor(private navCtrl: NavController, private storageService: StorageService) { }
+  constructor(private navCtrl: NavController, private storageService: StorageService) {
+   }
 
   ngOnInit() {
   }

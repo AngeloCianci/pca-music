@@ -1,6 +1,6 @@
 .slide-content { 
   text-align: center;
-  padding: 10px;
+  padding: 5px;
 }
 
 .slide-content img{
@@ -30,4 +30,22 @@
 .bg-card-test{
   --background: yellow;
   ;
+}
+.slide-content-artist { 
+  text-align: center;
+  padding: 50px;
+}
+
+.slide-content-artist img{
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 10px;
+  margin: 50% 0;
+}
+
+.slide-content-artist p {
+  font-size: 20px;
+  color: rgb(255, 255, 255);
+  text-align: justify;
 }
