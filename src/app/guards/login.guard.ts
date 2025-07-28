@@ -9,8 +9,9 @@ import { StorageService } from '../services/storage.service';
 export class LoginGuard implements CanActivate {
   constructor(private router: Router, private storageService: StorageService) {}
   async canActivate(){
-    const Login = await this.storageService.get('Login');
-    if ( Login === true) {
+    const Login = await this.storageService.get('LoginEmail');
+    const Password = await this.storageService.get('LoginPassword');
+    if ( Login === true && Password === true) {
       return true;
     } else {
       this.router.navigateByUrl('/login');

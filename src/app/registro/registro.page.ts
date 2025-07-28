@@ -62,7 +62,7 @@ export class RegistroPage implements OnInit {
 
     this.authService.registroUser(credentials).then(async(res) => {
       this.errorMessage = '';
-      await this.storageService.set('Email', credentials.email);
+      this.storageService.set('Email', credentials.email);
       await this.storageService.set('Password', credentials.password);
       await this.storageService.set('Nombre', credentials.nombre);
       await this.storageService.set('Apellido', credentials.apellido);

@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, F
 import { IonicModule, NavController} from '@ionic/angular';
 import { AuthService } from '../services/auth.service';
 import { StorageService } from '../services/storage.service';
+import { LoginService } from '../services/login.service';
 
 
 @Component({
@@ -38,7 +39,7 @@ export class LoginPage implements OnInit {
     ]   
   }
 
-  constructor(private storageService: StorageService, private formBuilder: FormBuilder, private authService: AuthService, private navCtrl: NavController) { 
+  constructor(private loginService: LoginService, private storageService: StorageService, private formBuilder: FormBuilder, private authService: AuthService, private navCtrl: NavController) { 
     this.loginForm = this.formBuilder.group({
       email: new FormControl('', Validators.compose([Validators.required,Validators.email])),
       password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)]))
@@ -53,13 +54,16 @@ export class LoginPage implements OnInit {
     this.navCtrl.navigateForward('/registro');
   }
 
- loginUser(credentials: any) {
-    console.log(credentials)
-    this.authService.loginUser(credentials).then(async(res) => {
-      await this.storageService.set('Login', true);
+ loginUser(email: any, password: any) {
+    this.loginService.checkloginEmail(email).then(async() => {
+      await this.storageService.set('LoginEmail', true);
+      this.errorMessage = '';
+    });this.loginService.checkloginPassword(password).then(async() => {
+      await this.storageService.set('LoginPassword', true);
       this.errorMessage = '';
       this.navCtrl.navigateForward('menu/home');
-    }).catch(error =>{
+    })
+    .catch(error =>{
       this.errorMessage = error;
     })
       
