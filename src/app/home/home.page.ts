@@ -54,14 +54,10 @@ export class HomePage implements OnInit{
 
   async toggleFavorito(id: any) {
     if (await this.authService.valfavoritos(id)) {
-      console.log("esto es id: ", id)
       this.authService.delfavoritos(id);
       this.iconoFavorito = !this.iconoFavorito;
     }else{
-      this.authService.addfavoritos(id).subscribe({
-        next: res => console.log('✅ Agregado correctamente:', res),
-        error: err => console.error('❌ Error al agregar:', err)
-      });
+      this.authService.addfavoritos(id)
       this.iconoFavorito = !this.iconoFavorito;
     }
       

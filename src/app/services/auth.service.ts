@@ -41,19 +41,26 @@ export class AuthService {
   }
 
   addfavoritos(fav: any) {
-    return this.http.post(`${this.urlServer}/favoritos`, fav, this.httpHeaders);
-
+    this.http.post(`${this.urlServer}/favorite track`, fav, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).subscribe({
+      next: res => console.log('✅ Canción guardada:', res),
+      error: err => console.error('❌ Error al guardar:', err)
+    });
   }
 
   delfavoritos(fav: any) {
-    this.http.delete(`${this.urlServer}/favoritos`, fav);
+    this.http.delete(`${this.urlServer}/favorite track`, fav);
   }
 
   async valfavoritos(fav: any): Promise<boolean> {
     try {
-      await firstValueFrom(this.http.get(`${this.urlServer}/favoritos/${fav}`));
+      await firstValueFrom(this.http.get(`${this.urlServer}/favorite track/${fav}`));
       return true; 
     } catch (error) {
+      console.log(this.http.get(`${this.urlServer}/favorite track/${fav}`))
       return false;
     }
   }
