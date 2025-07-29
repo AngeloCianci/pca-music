@@ -34,7 +34,22 @@ export class RegistroPage implements OnInit {
       {
         type: "minlength", message: "La contraseña debe tener al menos 6 caracteres"
       }
-    ]    
+    ], nombre: [
+      { 
+        type: "required", message: "*Este campo es obligatorio" 
+      },
+      { 
+        type: "minlength", message: "*debes usar minimo 4 carcteres" 
+      },
+    ],
+    apellido: [
+      { 
+        type: "required", message: "*Este campo es obligatorio" 
+      },
+      { 
+        type: "minlength", message: "*debes usar minimo 4 caracteres" 
+      },
+    ]
   }
 
   constructor(private storageService: StorageService, private formBuilder: FormBuilder, private authService: AuthService, private navCtrl: NavController) { 
@@ -60,16 +75,11 @@ export class RegistroPage implements OnInit {
       return;
     }
 
-    this.authService.registroUser(credentials).then(async(res) => {
+    this.authService.registroUser(credentials).subscribe(res => {
       this.errorMessage = '';
-      this.storageService.set('Email', credentials.email);
-      await this.storageService.set('Password', credentials.password);
-      await this.storageService.set('Nombre', credentials.nombre);
-      await this.storageService.set('Apellido', credentials.apellido);
+      console.log(res)
       this.navCtrl.navigateForward('/login');
-    }).catch(error => {
-      this.errorMessage = error;
-    });
+    })
   }
 
 }

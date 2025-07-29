@@ -6,6 +6,7 @@ import { StorageService } from '../services/storage.service';
 import { Router } from '@angular/router';
 import { MusicService } from '../services/music.service';
 import { SongsModalPage } from '../songs-modal/songs-modal.page';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +34,8 @@ export class HomePage implements OnInit{
   };
   currentSong: any;
   newTime: any;
-  constructor(private modalCtrl: ModalController, private router: Router, private storageService: StorageService, private musicService: MusicService) {}
+  iconoFavorito: boolean = false;
+  constructor(private authService: AuthService, private modalCtrl: ModalController, private router: Router, private storageService: StorageService, private musicService: MusicService) {}
 
   async ngOnInit() {
     await this.loadStorageData();
@@ -49,6 +51,22 @@ export class HomePage implements OnInit{
     })
 
   }
+
+  async toggleFavorito(id: any) {
+    if (await this.authService.valfavoritos(id)) {
+      console.log("esto es id: ", id)
+      this.authService.delfavoritos(id);
+      this.iconoFavorito = !this.iconoFavorito;
+    }else{
+      this.authService.addfavoritos(id).subscribe({
+        next: res => console.log('✅ Agregado correctamente:', res),
+        error: err => console.error('❌ Error al agregar:', err)
+      });
+      this.iconoFavorito = !this.iconoFavorito;
+    }
+      
+  }
+
 
   loadArtists(){
     this.musicService.getArtists().then(artists => {
